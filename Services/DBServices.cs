@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.IO;
 using System.Text;
-using UMS;
+using UMS.Utilities;
 
 class DBServices
 {
@@ -15,9 +15,13 @@ class DBServices
             SqlParameter idparam = new SqlParameter("@identityvalue", System.Data.SqlDbType.Int);
             idparam.Direction = System.Data.ParameterDirection.Output;
             cmdInsertFaculty.Parameters.Add(idparam);
-            conn.Open();
-            await cmdInsertFaculty.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdInsertFaculty.TryExecuteNonQueryAsync();
+            }
+            catch(SqlException ex) { Console.WriteLine(ex.Message); }
+            finally { conn.Close(); }
             faculty.FacultyId = Convert.ToInt32(cmdInsertFaculty.Parameters["@identityvalue"].Value);
 
             SqlCommand cmdAddressFaculty = new SqlCommand("INSERT INTO ADDRESSFACULTY VALUES (@street,@city,@state,@pincode,@id)", conn);
@@ -26,9 +30,13 @@ class DBServices
             cmdAddressFaculty.Parameters.AddWithValue("@state", faculty.State);
             cmdAddressFaculty.Parameters.AddWithValue("@pincode", faculty.Pincode);
             cmdAddressFaculty.Parameters.AddWithValue("@id", faculty.FacultyId);
-            conn.Open();
-            await cmdAddressFaculty.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdAddressFaculty.TryExecuteNonQueryAsync();
+            }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); } 
+            finally { conn.Close(); }
 
             Course course = new Course();
             var result = await DBServices.DisplayDBAsync("Course");
@@ -53,9 +61,13 @@ class DBServices
             SqlCommand cmdInsertFC = new SqlCommand("Insert Into FacultyCourse Values (@FacultyId,@CourseId)", conn);
             cmdInsertFC.Parameters.AddWithValue("@FacultyId", faculty.FacultyId);
             cmdInsertFC.Parameters.AddWithValue("@CourseId", course.CourseId);
-            conn.Open();
-            await cmdInsertFC.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdInsertFC.TryExecuteNonQueryAsync();
+            }
+            catch(SqlException ex) { Console.WriteLine(ex.Message) ; }
+            finally { conn.Close(); }
             Console.WriteLine("Faculty ID generated: " + faculty.FacultyId);
             Console.WriteLine("Faculty will be teaching Course with CourseID: " + course.CourseId);
         }
@@ -71,9 +83,16 @@ class DBServices
             SqlParameter idparam = new SqlParameter("@identityvalue", System.Data.SqlDbType.Int);
             idparam.Direction = System.Data.ParameterDirection.Output;
             cmdInsertCourse.Parameters.Add(idparam);
-            conn.Open();
-            await cmdInsertCourse.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdInsertCourse.TryExecuteNonQueryAsync();
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally { conn.Close(); }
             course.CourseId = Convert.ToInt32(cmdInsertCourse.Parameters["@identityvalue"].Value);
             Console.WriteLine("CourseID generated: " + course.CourseId);
         }
@@ -95,10 +114,16 @@ class DBServices
             SqlParameter idparam = new SqlParameter("@identityvalue", System.Data.SqlDbType.Int);
             idparam.Direction = System.Data.ParameterDirection.Output;
             cmdInsertStudent.Parameters.Add(idparam);
-            //Console.WriteLine(cmdInsertStudent.CommandText);
-            conn.Open();
-            await cmdInsertStudent.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdInsertStudent.TryExecuteNonQueryAsync();
+            }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            finally
+            {
+                conn.Close();
+            }
             student.StudentId = Convert.ToInt32(cmdInsertStudent.Parameters["@identityvalue"].Value);
 
             SqlCommand cmdAddressStudent = new SqlCommand("INSERT INTO ADDRESSSTUDENT VALUES (@street,@city,@state,@pincode,@id)", conn);
@@ -107,9 +132,13 @@ class DBServices
             cmdAddressStudent.Parameters.AddWithValue("@state", student.State);
             cmdAddressStudent.Parameters.AddWithValue("@pincode", student.Pincode);
             cmdAddressStudent.Parameters.AddWithValue("@id", student.StudentId);
-            conn.Open();
-            await cmdAddressStudent.TryExecuteNonQueryAsync();
-            conn.Close();
+            try
+            {
+                conn.Open();
+                await cmdAddressStudent.TryExecuteNonQueryAsync();
+            }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            finally { conn.Close(); }
             Console.WriteLine("Student ID Generated: " + student.StudentId);
         }
     }

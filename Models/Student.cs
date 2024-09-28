@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
-using UMS;
+using UMS.Utilities;
 
 class Student : IUniversity, IAddress
 {
