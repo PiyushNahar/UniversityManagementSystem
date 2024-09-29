@@ -1,7 +1,13 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 class PreReq
 {
+    //private readonly ILogger<PreReq> _logger;
+    //public PreReq(ILogger<PreReq> logger)
+    //{
+    //    _logger = logger;
+    //}
     public async static Task Requirements()
     {
         try { 
@@ -11,6 +17,7 @@ class PreReq
                 cmdDB.CommandText = "IF NOT EXISTS (SELECT NAME FROM SYS.DATABASES WHERE NAME LIKE 'UMS') BEGIN CREATE DATABASE UMS; END";
                 cmdDB.Connection = conn;
                 conn.Open();
+                //_logger.LogInformation();
                 await cmdDB.TryExecuteNonQueryAsync();
                 conn.Close();
             }
@@ -148,13 +155,6 @@ class PreReq
                     "('321 Maple St', 'Gotham', 'NY', '10001', 3), " +
                     "('210 Pine St', 'Metropolis', 'KS', '66502', 4), " +
                     "('303 Cedar St', 'Star City', 'CA', '90210', 5); " +
-
-                    "INSERT INTO STUDENTCOURSE (STUDENTID, COURSEID) VALUES " +
-                    "(1, 1), " +
-                    "(2, 2), " +
-                    "(3, 3), " +
-                    "(4, 4), " +
-                    "(5, 5); " +
 
                     "INSERT INTO [TRANSACTION] (TRANSID, STUDENTID, CARDHOLDERNAME, CARDNUMBER, AMOUNT, PAYEMENTSTATUS) VALUES " +
                     "('TRX1001', 1, 'John Doe', 3456, 5000, 'Success'), " +

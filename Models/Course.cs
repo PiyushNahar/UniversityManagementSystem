@@ -35,35 +35,5 @@ class Course : IUniversity
         }
         await DBServices.RemoveDBAsync(this,CourseId);
     }
-
-    //public async Task<List<int>> Display()
-    //{
-
-    //    using (SqlConnection conn = new SqlConnection(Helper.ConnStr))
-    //    {
-    //        SqlCommand cmdDisplay = new SqlCommand();
-    //        cmdDisplay.Connection = conn;
-    //        cmdDisplay.CommandText = "Select * from Course";
-    //        conn.Open();
-    //        SqlDataReader reader = await cmdDisplay.ExecuteReaderAsync();
-    //        List<int> result = new List<int>();
-    //        Console.WriteLine($"{"CourseID",-10}\t" +
-    //              $"{"CourseName",-30}\t" +
-    //              $"{"Credits"}");
-    //        Console.WriteLine("-------------------------------------------------------");
-
-    //        while (reader.Read())
-    //        {
-    //            Console.WriteLine($"{reader["CourseId"],-10}\t" +
-    //                              $"{reader["CourseName"],-30}\t" +
-    //                              $"{reader["Credits"]}");
-    //            result.Add(Convert.ToInt32(reader["CourseID"]));
-    //        }
-    //        reader.Close();
-    //        conn.Close();
-
-    //        return result;
-    //    }
-    //}
 }
 

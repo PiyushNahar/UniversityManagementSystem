@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Serilog;
 using System.IO;
 using System.Text;
 using UMS.Utilities;
@@ -18,9 +19,13 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdInsertFaculty.CommandText}");
                 await cmdInsertFaculty.TryExecuteNonQueryAsync();
             }
-            catch(SqlException ex) { Console.WriteLine(ex.Message); }
+            catch(SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally { conn.Close(); }
             faculty.FacultyId = Convert.ToInt32(cmdInsertFaculty.Parameters["@identityvalue"].Value);
 
@@ -33,9 +38,13 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdAddressFaculty.CommandText}");
                 await cmdAddressFaculty.TryExecuteNonQueryAsync();
             }
-            catch (SqlException ex) { Console.WriteLine(ex.Message); } 
+            catch (SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally { conn.Close(); }
 
             Course course = new Course();
@@ -56,7 +65,9 @@ class DBServices
                         throw new CourseNotFoundException("Invalid Course...");
                     }
                 }
-                catch (CourseNotFoundException ex) { Console.WriteLine(ex.Message); }
+                catch (CourseNotFoundException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+                }
             }
             SqlCommand cmdInsertFC = new SqlCommand("Insert Into FacultyCourse Values (@FacultyId,@CourseId)", conn);
             cmdInsertFC.Parameters.AddWithValue("@FacultyId", faculty.FacultyId);
@@ -64,9 +75,13 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdInsertFC.CommandText}");
                 await cmdInsertFC.TryExecuteNonQueryAsync();
             }
-            catch(SqlException ex) { Console.WriteLine(ex.Message) ; }
+            catch(SqlException ex) { Console.WriteLine(ex.Message) ; 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally { conn.Close(); }
             Console.WriteLine("Faculty ID generated: " + faculty.FacultyId);
             Console.WriteLine("Faculty will be teaching Course with CourseID: " + course.CourseId);
@@ -86,11 +101,15 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdInsertCourse.CommandText}");
                 await cmdInsertCourse.TryExecuteNonQueryAsync();
             }
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
+                Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+
             }
             finally { conn.Close(); }
             course.CourseId = Convert.ToInt32(cmdInsertCourse.Parameters["@identityvalue"].Value);
@@ -117,9 +136,13 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdInsertStudent.CommandText}");
                 await cmdInsertStudent.TryExecuteNonQueryAsync();
             }
-            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally
             {
                 conn.Close();
@@ -135,9 +158,13 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdAddressStudent.CommandText}");
                 await cmdAddressStudent.TryExecuteNonQueryAsync();
             }
-            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally { conn.Close(); }
             Console.WriteLine("Student ID Generated: " + student.StudentId);
         }
@@ -158,8 +185,10 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdRemove.CommandText}");
                 int affected = await cmdRemove.TryExecuteNonQueryAsync();
-                
+
                 try
                 {
                     if (affected == 0)
@@ -173,21 +202,29 @@ class DBServices
                     }
                     else Console.WriteLine($"Removed {source} with {source}ID " + Id);
                 }
-                catch (StudentNotFoundException e)
+                catch (StudentNotFoundException ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(ex.Message);
+                    Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+
                 }
-                catch (FacultyNotFoundException e)
+                catch (FacultyNotFoundException ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(ex.Message);
+                    Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+
                 }
-                catch (CourseNotFoundException e)
+                catch (CourseNotFoundException ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine(ex.Message);
+                    Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+
                 }
             }
-            catch(SqlException e)
-            { Console.WriteLine(e.Message); }
+            catch(SqlException ex)
+            { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally { conn.Close(); }
         }
     }
@@ -227,6 +264,8 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmd.CommandText}");
                 SqlDataReader reader = await cmd.TryExecuteReaderAsync();
                 while (reader.Read())
                 {
@@ -260,9 +299,11 @@ class DBServices
                 }
                 reader.Close();
             }
-            catch (SqlException e)
+            catch (SqlException ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
+                Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+
             }
             finally
             {
@@ -284,13 +325,17 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdcheck.CommandText}");
                 SqlDataReader reader = await cmdcheck.TryExecuteReaderAsync();
                 while (reader.Read())
                 {
                     ExistingTrans.Add(reader["transId"].ToString());
                 }
             }
-            catch (SqlException e) { Console.WriteLine(e.Message); }
+            catch (SqlException ex) { Console.WriteLine(ex.Message);
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally
             {
                 conn.Close();
@@ -324,10 +369,15 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmd.CommandText}");
                 await cmd.TryExecuteNonQueryAsync();
+                Log.Information($"Executing Command: {cmdUpdatePay.CommandText}");
                 await cmdUpdatePay.TryExecuteNonQueryAsync();
             }
-            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally
             {
                 conn.Close();
@@ -345,6 +395,8 @@ class DBServices
             try
             {
                 conn.Open();
+                Log.Information("Connection Opened to0 database");
+                Log.Information($"Executing Command: {cmdifpaid.CommandText}");
                 SqlDataReader reader = await cmdifpaid.TryExecuteReaderAsync();
                 while (reader.Read())
                 {
@@ -352,7 +404,9 @@ class DBServices
                 }
                 reader.Close();
             }
-            catch (SqlException ex) { Console.WriteLine(ex.Message); }
+            catch (SqlException ex) { Console.WriteLine(ex.Message); 
+            Log.Error($"Execption occured: {ex} Message: {ex.Message}");
+            }
             finally {conn.Close(); }
         }
         return false;
